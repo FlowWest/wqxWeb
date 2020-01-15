@@ -1,32 +1,34 @@
 # prep a header to be used by all api calls
 
-wqx_header <- function(method, uri, user_id=NULL, private_key=NULL, ...) {
-  if (is.null(user_id)) {
-    user_id <- get_user_id(...)
-  }
-
-  if (is.null(private_key)) {
-    private_key <- get_private_key(...)
-  }
+#' Prepare Header
+#' @description Create the required headers for all API calls
+#' @param method the method used for the call "GET", "POST", ...
+#' @param uri uri for the API call
+#' @param config config file where userID and private key are set. See details section
+#' for more information
+#' @return string vector of headers
+wqx_header <- function(method, uri, config, verbose=FALSE) {
+  user_creds <- tryCatch(config::get(file = config),
+                         error = function(e) stop("Could not find a config file", call. = FALSE))
 
   time_stamp <- format(lubridate::now("UTC"), "%m/%d/%Y %I:%M:%S %p")
-  signature_str <- paste0(user_id, time_stamp, uri, toupper(method))
-  signature <- digest::hmac(key = private_key, object = signature, algo = "sha256")
+
+  signature_string <- paste0(user_creds$user_id,
+                             time_stamp,
+                             uri,
+                             toupper(method))
+
+  signature_raw <- charToRaw(signature_string)
+
+  if (verbose) {
+    message(paste("Signing with:", signature_string))
+  }
+
+  signature <- digest::hmac(user_creds$private_key, signature_raw, algo = "sha256")
 
   c(
-    "X-UserID" = user_id,
+    "X-UserID" = user_creds$user_id,
     "X-Stamp" = time_stamp,
     "X-Signature" = signature
   )
 }
-
-get_user_id <- function(config_file) {
-  tryCatch(config::get("user_id", file = config_file),
-           error = function(e) stop("Could not find a config file", call. = FALSE))
-}
-
-get_private_key <- function(config_file) {
-  tryCatch(config::get("private_key", file = config_file),
-           error = function(e) stop("Could not find a config file", call. = FALSE))
-}
-

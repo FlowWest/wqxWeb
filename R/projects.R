@@ -8,7 +8,7 @@
 wqx_projects <- function(org_id=NULL, project_id=NULL, transaction_id=NULL,
                          last_change_min=NULL, last_change_max=NULL, ...) {
 
-  url <- "https://cdx.epa.gov/WQXWeb/api/Projects/"
+  url <- "https://cdx.epa.gov/WQXWeb/api/Projects"
   req_headers <- wqx_header("GET", uri = url, ...)
 
   httr::GET(
@@ -23,7 +23,16 @@ wqx_projects <- function(org_id=NULL, project_id=NULL, transaction_id=NULL,
 
 }
 
-
+wqx_dataset_status <- function(datasetId, ...) {
+  url <- httr::modify_url(httr::parse_url("https://cdx.epa.gov/WQXWeb/api/GetStatus"),
+                          query = list(datasetId = datasetId))
+  req_headers <- wqx_header("GET", uri = url, ...)
+  message(paste("Using headers:\n", paste(req_headers, collapse = "\n")))
+  httr::GET(
+    url = url,
+    httr::add_headers(`Content-Type`="application/xml", .headers = req_headers)
+  )
+}
 # Projects: returns projects for an organization
 # Action
 # GET

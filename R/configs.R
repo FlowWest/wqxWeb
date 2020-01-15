@@ -1,3 +1,4 @@
+#' @export
 wqx_read_config <- function(cfg) {
   x <- xml2::as_list(xml2::read_xml(cfg))
   reg_cols <- x$Configuration$RegularColumns
@@ -10,4 +11,3 @@ wqx_read_config <- function(cfg) {
       ))
 }
 
-wqx_read_config("data-raw/Import Configuration.cfg")

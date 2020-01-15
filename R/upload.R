@@ -13,7 +13,7 @@ wqx_upload <- function(file_path, private_key, user_id) {
 
   # build signature for upload
   signature = paste0(user_id, time_stamp, uri, "POST")
-  hmac_obj <- digest::hmac(key = private_key, object = signature, alg)
+  hmac_obj <- digest::hmac(key = private_key, object = signature, algo = "sha256")
   httr::POST(
     url = endpoint
   )

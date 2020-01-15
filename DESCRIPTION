@@ -14,5 +14,6 @@ Imports:
     lubridate,
     digest,
     xml2,
-    purrr
-RoxygenNote: 7.0.0
+    purrr,
+    config
+RoxygenNote: 7.0.2
