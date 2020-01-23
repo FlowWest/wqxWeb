@@ -20,6 +20,15 @@ to properly install this package.
 wqxWeb is in early development, and we hope to streamline the installation process among 
 other components in the near future.
 
+## Usage
+
+wqxWeb exports a function for each of the endpoints provided by the WQX Web API. The current release
+makes no attempt at the creating a "workflow", but future iterations will hopefully see the 
+integration of function compositions and the `%>%` operator.
+
+In order to use this service, you must be registered with the CDX and have created a private key.
+More information on these steps [#](here). 
+
 ## Details
 
 Currently the R package wraps a python package `wqxtools` with mirror functions that allow the 
