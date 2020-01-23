@@ -4,14 +4,7 @@
 \alias{wqx_projects}
 \title{Upload to Server}
 \usage{
-wqx_projects(
-  org_id = NULL,
-  project_id = NULL,
-  transaction_id = NULL,
-  last_change_min = NULL,
-  last_change_max = NULL,
-  ...
-)
+wqx_projects(org_id, config)
 }
 \arguments{
 \item{file_path}{path to file, filename cannot have spaces}

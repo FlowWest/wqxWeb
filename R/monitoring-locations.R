@@ -1,15 +1,43 @@
+#' @title WQX Monitoring Locations Endpoint
+#' @param org_id organization ID as designated by the WQX (required)
+#' @param location_id a monitoring location ID as designation by organization (optional)
+#' @param location_name a monitoring location name as designated by organization (optional)
+#' @param location_type a monitoring location type (optional)
+#' @param config path to configuration file (see details for more information)
 #' @export
-wqx_locations <- function(org_id, location_id = NULL, location_name = NULL,
-                          location_type = NULL, transaction_id = NULL, config = NULL, ...) {
+wqx_locations <- function(org_id, config = NULL, pk = NULL, username = NULL) {
+  if (is.null(config)) {
+    if (any(is.null(pk), is.null(username))) stop("No config file provided, please provide private key and username")
+  }
 
-  url <- httr::modify_url(base_url, path = "WQXWeb/api/MonitoringLocations",
-                          query = list("OrganizationIdentifiersCsv" = org_id,
-                                       "MonitoringLocationIdentifiersCsv" = location_id,
-                                       "MonitoringLocationName" = location_name,
-                                       "MonitoringLocationType" = location_type))
+  user_creds <- tryCatch(config::get(file = config),
+                         error = function(e) stop("Could not find a config file", call. = FALSE))
+
+  org_id = paste(org_id, collapse = ",")
+  resp <- wqx$wqxtools$monitoring_locations(org_id,
+                                            user_creds$private_key,
+                                            user_creds$user_id)
+
+  if (resp$status_code != 200) {
+    stop("an error occures communicating with the WQX Web Serivce", call. = FALSE)
+  }
 
 
-  request_headers <- wqx_header("GET", url, config)
+  data <- resp$content %>%
+    purrr::map_df(~tibble::tibble(
+      OrganizationIdentifier = .$OrganizationIdentifier,
+      MonitoringLocationIdentifier = .$MonitoringLocationIdentifier,
+      MonitoringLocationName = .$MonitoringLocationName,
+      StateCode = .$StateCode,
+      TribalLandName = .$TribalLandName,
+      MonitoringLocationTypeName = .$MonitoringLocationTypeName,
+      LatitudeMeasure = .$LatitudeMeasure,
+      LongitudeMeasure = .$LongitudeMeasure
+    ))
 
-  httr::GET(url, httr::add_headers(.headers = request_headers))
+  list(
+    status_code = resp$status_code,
+    data = data
+  )
+
 }

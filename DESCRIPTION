@@ -15,5 +15,7 @@ Imports:
     digest,
     xml2,
     purrr,
-    config
+    config,
+    stringi,
+    reticulate
 RoxygenNote: 7.0.2

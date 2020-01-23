@@ -7,28 +7,35 @@
 #' @param config config file where userID and private key are set. See details section
 #' for more information
 #' @return string vector of headers
+#' @export
 wqx_header <- function(method, uri, config, verbose=FALSE) {
+  b64 <- reticulate::import("base64")
   user_creds <- tryCatch(config::get(file = config),
                          error = function(e) stop("Could not find a config file", call. = FALSE))
 
   time_stamp <- format(lubridate::now("UTC"), "%m/%d/%Y %I:%M:%S %p")
 
-  signature_string <- paste0(user_creds$user_id,
-                             time_stamp,
-                             uri,
-                             toupper(method))
+  data <- sprintf(
+    "%s%s%s%s",
+    user_creds$user_id,
+    time_stamp,
+    uri,
+    toupper(method))
 
-  signature_raw <- charToRaw(signature_string)
-
-  if (verbose) {
-    message(paste("Signing with:", signature_string))
-  }
-
-  signature <- digest::hmac(user_creds$private_key, signature_raw, algo = "sha256")
+  signature_hash <- RCurl::base64Encode(
+    digest::hmac(
+      key = user_creds$private_key,
+      object = data,
+      algo = "sha256",
+      raw = TRUE))
 
   c(
     "X-UserID" = user_creds$user_id,
     "X-Stamp" = time_stamp,
-    "X-Signature" = signature
+    "X-Signature" = signature_hash
   )
 }
+
+
+
+
