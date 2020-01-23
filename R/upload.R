@@ -1,21 +1,117 @@
-#' @title Upload to Server
-#' @description upload a file to wqx server. This does not import the file, rather
-#' keeps it in a staging state.
-#' @param file_path path to file, filename cannot have spaces
-#' @param private_key private key associated with application or user, provided by WQX
-#' @param user_id user id associated with user or application
+#' Upload a file to the WQX (staging)
+#' @description upload a file to the wqx server, this file is not pushed to staging yet.
+#' @param file file to be uploaded
+#' @param config config file with private key and username
+#' @param pk private key if not supplied via a config file
+#' @param username username if not uspplied via a config file
+#' @return returns a list with status code and if succesful a file-id or if not
+#' successful an error message.
 #' @export
-wqx_upload <- function(file_path, private_key, user_id) {
+wqx_upload <- function(file, config=NULL, pk=NULL, username=NULL) {
+  if (is.null(config)) {
+    if (any(is.null(pk), is.null(username))) {
+      stop("No config file provided, please provide private key and username")
+    }
+    else {
+      user_creds <- list()
+      user_creds$private_key = pk
+      user_creds$user_id = username
+    }
+  } else {
+    user_creds <- tryCatch(config::get(file = config),
+                           error = function(e) stop("Could not find a config file", call. = FALSE))
 
-  file_name <- basename(file_path)
-  uri <- paste0("https://cdx.epa.gov/WQXWeb/api/Upload/", file_name)
-  time_stamp <- as.character(lubridate::now(tzone = "UTC"))
+  }
 
-  # build signature for upload
-  signature = paste0(user_id, time_stamp, uri, "POST")
-  hmac_obj <- digest::hmac(key = private_key, object = signature, algo = "sha256")
-  httr::POST(
-    url = endpoint
+
+  file_name <- basename(file)
+  resp <- wqx$wqxtools$upload(filename = file_name,
+                      filepath = file,
+                      pk = user_creds$private_key,
+                      username = user_creds$user_id)
+
+  if (resp$status_code == 200) {
+    message("file upload was succesfull, note the file id and call wqx_start_import() to start importing into staging phase")
+  }
+
+  list(
+    status_code = resp$status_code,
+    file_id = resp$content
+  )
+}
+
+
+#' Start importing into the staging database
+#' @description import an uploaded dataset into a staging phase
+#' @param file_id file_id for uploaded file, this is returned by wqx_upload()
+#' @param import_config config id for the destination of file
+#' @param file_type file type of dataset "CSV"
+#' @param new_or_existing is this data 'new' data, 'existing' data (replaces old data) or 'both'
+#' @param headers is the first line of the file a header?
+#' @param config config file
+#' @param pk private key if not supplied via a config file
+#' @param username username if not uspplied via a config file
+#' @export
+wqx_start_import <- function(file_id, import_config, file_type, new_or_existing,
+                             headers, config=NULL, pk=NULL, username=NULL) {
+
+  if (is.null(config)) {
+    if (any(is.null(pk), is.null(username))) {
+      stop("No config file provided, please provide private key and username")
+    }
+    else {
+      user_creds <- list()
+      user_creds$private_key = pk
+      user_creds$user_id = username
+    }
+  } else {
+    user_creds <- tryCatch(config::get(file = config),
+                           error = function(e) stop("Could not find a config file", call. = FALSE))
+
+  }
+
+
+  resp <- wqx$wqxtools$start_import(
+    pk = user_creds$private_key,
+    username = user_creds$user_id,
+    import_config = import_config,
+    file_id = file_id,
+    file_type = file_type,
+    new_or_existing = new_or_existing,
+    headers = headers
   )
 
+  list(
+    status_code = resp$status_code,
+    dataset_id = resp$content
+  )
+
+}
+
+#' Get status
+#' @export
+wqx_get_status <- function(dataset_id, config=NULL, pk=NULL, username=NULL) {
+
+  if (is.null(config)) {
+    if (any(is.null(pk), is.null(username))) {
+      stop("No config file provided, please provide private key and username")
+    }
+    else {
+      user_creds <- list()
+      user_creds$private_key = pk
+      user_creds$user_id = username
+    }
+  } else {
+    user_creds <- tryCatch(config::get(file = config),
+                           error = function(e) stop("Could not find a config file", call. = FALSE))
+
+  }
+
+  resp <- wqx$wqxtools$get_status(dataset_id=dataset_id, pk=user_creds$private_key,
+                                  username=user_creds$user_id)
+
+  list(
+    status_code=resp$status_code,
+    content=resp$content
+  )
 }

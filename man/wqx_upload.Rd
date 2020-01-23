@@ -2,18 +2,23 @@
 % Please edit documentation in R/upload.R
 \name{wqx_upload}
 \alias{wqx_upload}
-\title{Upload to Server}
+\title{Upload a file to the WQX (staging)}
 \usage{
-wqx_upload(file_path, private_key, user_id)
+wqx_upload(file, config = NULL, pk = NULL, username = NULL)
 }
 \arguments{
-\item{file_path}{path to file, filename cannot have spaces}
+\item{file}{file to be uploaded}
 
-\item{private_key}{private key associated with application or user, provided by WQX}
+\item{config}{config file with private key and username}
 
-\item{user_id}{user id associated with user or application}
+\item{pk}{private key if not supplied via a config file}
+
+\item{username}{username if not uspplied via a config file}
+}
+\value{
+returns a list with status code and if succesful a file-id or if not
+successful an error message.
 }
 \description{
-upload a file to wqx server. This does not import the file, rather
-keeps it in a staging state.
+upload a file to the wqx server, this file is not pushed to staging yet.
 }

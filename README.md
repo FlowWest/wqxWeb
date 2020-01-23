@@ -6,5 +6,5 @@ defined by the WQX Web REST API.
 
 ## Details
 
-Currently the R packag wraps a python package `wqxtools` with mirror functions that allow the 
+Currently the R package wraps a python package `wqxtools` with mirror functions that allow the 
 R interface.
