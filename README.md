@@ -17,7 +17,8 @@ Aslo note that the `wqxtools` python package is bundled with this repository as 
 git submodule, therefore a command-line git interface must be available in order for `remotes` 
 to properly install this package. 
 
-wqxWeb is in early development, and we hope to streamline installation among other components.
+wqxWeb is in early development, and we hope to streamline the installation process among 
+other components in the near future.
 
 ## Details
 
