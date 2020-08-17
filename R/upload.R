@@ -1,9 +1,9 @@
-#' Upload a file to the WQX (staging)
+#' Upload a file to the WQX servers
 #' @description upload a file to the wqx server, this file is not pushed to staging yet.
 #' @param file file to be uploaded
 #' @param config config file with private key and username
-#' @param pk private key if not supplied via a config file
-#' @param username username if not uspplied via a config file
+#' @param pk private key if not supplied via a config file, ignored if config file supplied
+#' @param username username, ignored if config file supplied
 #' @return returns a list with status code and if succesful a file-id or if not
 #' successful an error message.
 #' @export
@@ -13,12 +13,13 @@ wqx_upload <- function(file, config=NULL, pk=NULL, username=NULL) {
       stop("No config file provided, please provide private key and username")
     }
     else {
-      user_creds <- list()
-      user_creds$private_key = pk
-      user_creds$user_id = username
+      user_creds <- list(
+        "private_key" = pk,
+        "username" = username
+      )
     }
   } else {
-    user_creds <- tryCatch(config::get(file = config),
+    user_creds <- tryCatch(read.csv(config, stringsAsFactors = FALSE),
                            error = function(e) stop("Could not find a config file", call. = FALSE))
 
   }
@@ -28,7 +29,7 @@ wqx_upload <- function(file, config=NULL, pk=NULL, username=NULL) {
   resp <- wqx$wqxtools$upload(filename = file_name,
                       filepath = file,
                       pk = user_creds$private_key,
-                      username = user_creds$user_id)
+                      username = user_creds$username)
 
   if (resp$status_code == 200) {
     message("file upload was succesfull, note the file id and call wqx_start_import() to start importing into staging phase")
@@ -42,13 +43,15 @@ wqx_upload <- function(file, config=NULL, pk=NULL, username=NULL) {
 
 
 #' Start importing into the staging database
-#' @description import an uploaded dataset into a staging phase
+#' @description import an uploaded dataset into a staging phase. This function is
+#' called once you have uploaded data using the \code{wqx_upload} function.
 #' @param file_id file_id for uploaded file, this is returned by wqx_upload()
-#' @param import_config config id for the destination of file
+#' @param import_config config id for the destination of file. This can be
+#' found in the CDX web portal.
 #' @param file_type file type of dataset "CSV"
 #' @param new_or_existing is this data 'new' data, 'existing' data (replaces old data) or 'both'
 #' @param headers is the first line of the file a header?
-#' @param config config file
+#' @param config config file with username and private key
 #' @param pk private key if not supplied via a config file
 #' @param username username if not uspplied via a config file
 #' @export

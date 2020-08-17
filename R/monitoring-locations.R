@@ -10,13 +10,13 @@ wqx_locations <- function(org_id, config = NULL, pk = NULL, username = NULL) {
     if (any(is.null(pk), is.null(username))) stop("No config file provided, please provide private key and username")
   }
 
-  user_creds <- tryCatch(config::get(file = config),
+  user_creds <- tryCatch(read.csv(config, stringsAsFactors = F),
                          error = function(e) stop("Could not find a config file", call. = FALSE))
 
   org_id = paste(org_id, collapse = ",")
   resp <- wqx$wqxtools$monitoring_locations(org_id,
                                             user_creds$private_key,
-                                            user_creds$user_id)
+                                            user_creds$username)
 
   if (resp$status_code != 200) {
     stop("an error occures communicating with the WQX Web Serivce", call. = FALSE)
