@@ -92,6 +92,11 @@ wqx_start_import <- function(file_id, import_config, file_type, new_or_existing,
 }
 
 #' Get status
+#' @description returns a status code for the given dataset id
+#' @param dataset_id id corresponding to dataset
+#' @param config config file with username and private key
+#' @param pk private key string, ignored if config file supplied
+#' @param username username string, ignored if config file supplied
 #' @export
 wqx_get_status <- function(dataset_id, config=NULL, pk=NULL, username=NULL) {
 
