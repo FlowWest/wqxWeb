@@ -11,4 +11,3 @@ wqx <- NULL
   python_path <- system.file("python", package = "wqxWeb")
   wqx <<- reticulate::import_from_path("wqxtools", path = python_path)
 }
-

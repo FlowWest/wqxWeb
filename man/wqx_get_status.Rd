@@ -6,6 +6,15 @@
 \usage{
 wqx_get_status(dataset_id, config = NULL, pk = NULL, username = NULL)
 }
+\arguments{
+\item{dataset_id}{id corresponding to dataset}
+
+\item{config}{config file with username and private key}
+
+\item{pk}{private key string, ignored if config file supplied}
+
+\item{username}{username string, ignored if config file supplied}
+}
 \description{
-Get status
+returns a status code for the given dataset id
 }

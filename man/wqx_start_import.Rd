@@ -18,7 +18,8 @@ wqx_start_import(
 \arguments{
 \item{file_id}{file_id for uploaded file, this is returned by wqx_upload()}
 
-\item{import_config}{config id for the destination of file}
+\item{import_config}{config id for the destination of file. This can be
+found in the CDX web portal.}
 
 \item{file_type}{file type of dataset "CSV"}
 
@@ -26,12 +27,13 @@ wqx_start_import(
 
 \item{headers}{is the first line of the file a header?}
 
-\item{config}{config file}
+\item{config}{config file with username and private key}
 
 \item{pk}{private key if not supplied via a config file}
 
 \item{username}{username if not uspplied via a config file}
 }
 \description{
-import an uploaded dataset into a staging phase
+import an uploaded dataset into a staging phase. This function is
+called once you have uploaded data using the \code{wqx_upload} function.
 }

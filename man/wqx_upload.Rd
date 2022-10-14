@@ -2,7 +2,7 @@
 % Please edit documentation in R/upload.R
 \name{wqx_upload}
 \alias{wqx_upload}
-\title{Upload a file to the WQX (staging)}
+\title{Upload a file to the WQX servers}
 \usage{
 wqx_upload(file, config = NULL, pk = NULL, username = NULL)
 }
@@ -11,9 +11,9 @@ wqx_upload(file, config = NULL, pk = NULL, username = NULL)
 
 \item{config}{config file with private key and username}
 
-\item{pk}{private key if not supplied via a config file}
+\item{pk}{private key if not supplied via a config file, ignored if config file supplied}
 
-\item{username}{username if not uspplied via a config file}
+\item{username}{username, ignored if config file supplied}
 }
 \value{
 returns a list with status code and if succesful a file-id or if not
