@@ -3,7 +3,7 @@
 #' querying data from the CDX.
 #' @export
 cdx <- function(user, key, filepath, filename) {
-  wqx$wqxtools$cdx$CDX(
+  wqx$cdx$CDX(
     user_id = user,
     cdx_key = key,
     file_path = filepath,
@@ -13,10 +13,9 @@ cdx <- function(user, key, filepath, filename) {
 
 
 # create a CDX session object
-my_username <- "user"
-my_key <- "l3uhB9o3IWHqpbbYlUz59hPiqgPI7cWxXGj9B0fuX5lDKvFZl5dVy5uGsyCcqpdz"
-my_filepath <- "some/path"
-my_file <- "test.xlsx"
+my_username <- "INIGOPENG"
+my_filepath <- "data-raw/combined_vusitu_data_for_wqx.csv"
+my_file <- "combined_vusitu_data_for_wqx.csv"
 
 session <- cdx(
   user = my_username,
@@ -46,6 +45,21 @@ cdx_import <- function(session, file_id, config_id, params) {
   return(res)
 }
 
+cdx_get_status <- function(session, dataset_id) {
+  sta <- session$get_status(
+    dataset_id = dataset_id
+  )
+
+  return(sta)
+}
+
+cdx_submit_to_cdx <- function(session, dataset_id) {
+  sub <- session$submit_to_cdx(
+    dataset_id = dataset_id
+  )
+
+  return(sub)
+}
 
 
 
