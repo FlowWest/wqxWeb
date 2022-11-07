@@ -19,6 +19,7 @@ check_python_deps <- function() {
 # wqx tools implementation in python
 wqx <- NULL
 
+
 .onLoad <- function(libname, pkgname) {
   python_path <- system.file("python", package = "wqxWeb")
   wqx <<- reticulate::import_from_path(

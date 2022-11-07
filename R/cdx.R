@@ -2,6 +2,7 @@
 #' @description creates a CDX session object that provides methods for uploding and
 #' querying data from the CDX.
 #' @export
+
 cdx <- function(user, key, filepath, filename) {
   wqx$cdx$CDX(
     user_id = user,
@@ -10,12 +11,6 @@ cdx <- function(user, key, filepath, filename) {
     file_name = filename
   )
 }
-
-
-# create a CDX session object
-my_username <- "INIGOPENG"
-my_filepath <- "data-raw/combined_vusitu_data_for_wqx.csv"
-my_file <- "combined_vusitu_data_for_wqx.csv"
 
 session <- cdx(
   user = my_username,
@@ -36,13 +31,13 @@ cdx_upload <- function(session) {
 }
 
 cdx_import <- function(session, file_id, config_id, params) {
-  res <- session$start_import(
+  dataset_id <- session$start_import(
     file_id = file_id,
     config_id = config_id,
     params = params
   )
 
-  return(res)
+  return(dataset_id)
 }
 
 cdx_get_status <- function(session, dataset_id) {
