@@ -6,7 +6,17 @@
 \usage{
 cdx(user, key, filepath, filename)
 }
+\arguments{
+\item{user}{CDX account username.}
+
+\item{key}{CDX private encryption key. Found in My User Account Details under
+Setup on CDX website.}
+
+\item{filepath}{Full file path of the file that is being uploaded to CDX.}
+
+\item{filename}{Name of the file that is being uploaded to CDX.}
+}
 \description{
-creates a CDX session object that provides methods for uploding and
+creates a CDX session object that provides methods for uploading and
 querying data from the CDX.
 }
