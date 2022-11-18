@@ -5,13 +5,27 @@ NULL
 base_url <- httr::parse_url("https://cdx.epa.gov")
 
 
-check_python_deps <- function() {
-  if (!reticulate::py_available()) {
-    message("a version of python was not found on your system")
-  }
+# create_virtual_env <- function(){
+#   if(nchar(unname(Sys.which("python"))) == 0){
+#     message("a version of python was not found on your system")
+#   }else{
+#     message("creating virtual environment")
+#     reticulate::virtualenv_create("r-reticulate")
+#     message("activating virtual environment")
+#     reticulate::use_virtualenv("r-reticulate", required = TRUE)
+#   }
+# }
 
-  if (!reticulate::py_module_available("numpy")) {
-    message("some python dependencies were not found, please run wqxWeb::py_install()")
+check_python_deps <- function() {
+  if (!reticulate::py_available()){
+    message("a version of python was not found on your system")
+  } else if (!reticulate::py_module_available("numpy")) {
+    message("some python dependencies were not found, installing missing packages to virtual environment")
+    # reticulate::virtualenv_install("r-reticulate", "numpy")
+    py_install("numpy")
+    numpy <- import("numpy")
+  }else {
+    message("you have all of the dependencies, you are good to go")
   }
 
 }
@@ -21,13 +35,18 @@ wqx <- NULL
 
 
 .onLoad <- function(libname, pkgname) {
+  # create_virtual_env()
   python_path <- system.file("python", package = "wqxWeb")
   wqx <<- reticulate::import_from_path(
     "wqxtools",
     path = python_path,
+    # delay_load = TRUE
     delay_load = list(
+      # before_load = function(){
+      #   create_virtual_env()
+      # },
       on_load = function() {
         check_python_deps()
-      }
-    ))
+      })
+  )
 }
