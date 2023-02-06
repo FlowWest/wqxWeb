@@ -18,7 +18,9 @@ base_url <- httr::parse_url("https://cdx.epa.gov")
 
 check_python_deps <- function() {
   if (!reticulate::py_available()){
-    message("a version of python was not found on your system")
+    message("A version of python was not found on your system, downloadign Python")
+    install_python("3.10:latest")
+    message("Python finished installing")
   } else if (!reticulate::py_module_available("numpy")) {
     message("some python dependencies were not found, installing missing packages to virtual environment")
     # reticulate::virtualenv_install("r-reticulate", "numpy")

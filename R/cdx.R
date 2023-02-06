@@ -10,7 +10,7 @@
 #'
 #' @export
 
-cdx <- function(user, key, filepath, filename) {
+cdx <- function(user, key, filepath, filename, data = NULL) {
   wqx$cdx$CDX(
     user_id = user,
     cdx_key = key,
