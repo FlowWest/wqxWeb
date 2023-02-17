@@ -1,3 +1,4 @@
 [submodule "inst/python/wqxtools"]
 	path = inst/python/wqxtools
 	url = https://github.com/FlowWest/wqxtools.git
+	branch = --branch
