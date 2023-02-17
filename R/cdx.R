@@ -11,7 +11,7 @@
 #' @export
 
 cdx <- function(user, key, filepath, filename, data = NULL) {
-  wqx$cdx$CDX(
+  wqx$wqxtools$cdx$CDX(
     user_id = user,
     cdx_key = key,
     file_path = filepath,

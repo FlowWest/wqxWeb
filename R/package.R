@@ -43,13 +43,6 @@ wqx <- NULL
   wqx <<- reticulate::import_from_path(
     "wqxtools",
     path = python_path,
-    # delay_load = TRUE
-    delay_load = list(
-      # before_load = function(){
-      #   create_virtual_env()
-      # },
-      on_load = function() {
-        check_python_deps()
-      })
+    delay_load = TRUE
   )
 }
