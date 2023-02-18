@@ -7,12 +7,12 @@ base_url <- httr::parse_url("https://cdx.epa.gov")
 check_python_deps <- function() {
   if (!reticulate::py_module_available("numpy")) {
     message("installing dependency 'numpy'")
-    py_install("numpy")
+    reticulate::py_install("numpy")
 
   }
   if (!reticulate::py_module_available("requests")) {
     message("installing dependency 'requests'")
-    py_install("requests")
+    reticulate::py_install("requests")
 
   }
 
